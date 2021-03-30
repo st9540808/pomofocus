@@ -164,10 +164,10 @@ input:focus {
     outline: none;
 }
 
-li:hover span{
+/* li:hover span{
     width: 40px;
     opacity: 1.0;
-}
+} */
 
 .fa-check-circle{
     color: rgb(223,223,223);

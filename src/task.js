@@ -42,19 +42,17 @@ export class Task {
 
 
   addTaskHandler = (event) => {
-
     if (event.keyCode !== 13) return;
     this.newtask.text = event.target.value;
 
     this.tasks.push(this.newtask);
-    debugger;
+    // debugger;
     const liEl = this.render();
     document.querySelector('#task-root').firstElementChild.appendChild(liEl);
     event.target.value = '';
     event.target.focus();
 
-    logger.push(
-      {
+    logger.push({
         action: 'add task',
         task: this.newtask.text,
         event
@@ -73,7 +71,6 @@ export class Task {
       logger.push({
         action: 'delete task',
         event
-
       })
     }
     if (event.target.nodeName !== 'I') {

@@ -145,7 +145,7 @@ export class Timer {
         }
         else {
             // things to do after pomodoro is finished
-            recordFocusTime(this.currentTimeInput);
+            this.recordFocusTime(this.currentTimeInput);
             ++this.cycle;
             if (this.cycle % 4 == 0) {
                 var finished = new Notification(this.timerType, {

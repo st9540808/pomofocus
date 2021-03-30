@@ -18,9 +18,9 @@
 
   <div id='root'>
     <div id="container">
-      
+
       <div id="upper">
-       
+
         <div id="interaction">
           <div id="timer-type-buttons">
             <button id="pomodoro-btn" class="pompdoro-btn">Pomodoro</button>
@@ -28,7 +28,7 @@
             <button id="long-break-btn" class="reset">Long Break</button>
           </div>
           <div id="time-div">
-            <input type="text" id="duration" value = '0:10' readonly>
+            <input type="text" id="duration" value='25:00' readonly>
             <button id="start-stop" class="start">Start</button>
           </div>
         </div>
@@ -40,10 +40,10 @@
   <!-- To Do task -->
   <div id="task-container">
     <!-- <h4>Add Task <i class="fa fa-plus"></i></h4> -->
-   
+
     <div id='task-root'>
       <ul>
-        
+
       </ul>
     </div>
     <input id="task-input" type="text" placeholder="Add Task">
@@ -66,6 +66,9 @@
     <pre id="content" style="white-space: pre-wrap;"></pre>
 
     <script type="text/javascript">
+      // calendarId for Google Calendar API
+      var pomodoroCalendarId;
+
       // Client ID and API key from the Developer Console
       var CLIENT_ID = '980949442256-6cacb5o7q320ljadg69fkst79qgjh4rv.apps.googleusercontent.com';
       var API_KEY = 'AIzaSyDic9tzBd0wpM-YqXHodOls14RKqDMpC-M';
@@ -186,13 +189,15 @@
 
       function checkPomodoroCalendar() {
         var res = null;
+
         gapi.client.calendar.calendarList.list({})
         .then(function(response) {
           // Handle the results here (response.result has the parsed body).
           console.log("Response", response);
           res = response;
           // check if pomodoro calendar exists, if not then add one
-          if (res.result.items.find(item => item.summary === "pomodoro") === undefined) {
+          var pomodoroCal = res.result.items.find(item => item.summary === "pomodoro");
+          if (pomodoroCal === undefined) {
             gapi.client.calendar.calendars.insert({
               "resource": {
                 "summary": "pomodoro"
@@ -200,9 +205,11 @@
             }).then(function (response) {
               // Handle the results here (response.result has the parsed body).
               console.log("Response", response);
+              pomodoroCal = response.id;
             },
             function (err) { console.error("gapi.client.calendar.calendars.insert Execute error", err); });
           }
+          pomodoroCalendarId = pomodoroCal.id;
           console.log("checked pomodoro calendar");
         },
         function(err) { console.error("gapi.client.calendar.calendarList.list Execute error", err); }

@@ -9,7 +9,7 @@ export class Timer {
     intervalSeconds = 1000;
     isStarted = false;
     timerType = 'pomodoro';
-
+    cycle = 0;
 
     constructor(currentTimeInput, startStopButton, pomodoroButton, shortBreakButton, longBreakButton, body, timerTypeLabel, taskInput) {
 
@@ -65,7 +65,6 @@ export class Timer {
             this.onComplete();
         } else {
             this.timeLeft = this.timeLeft - 1;
-            console.log(this.timeLeft);
             this.onTik();
         }
     }
@@ -106,10 +105,10 @@ export class Timer {
     onTik() {
         console.log('timer tikking');
 
-        if (this.timeLeft == 5) {
+        if (this.timerType === 'pomodoro' && this.timeLeft == 5*60) {
             var tln = new Notification(this.timerType, {
                 body: "5 minutes left",
-            })
+            });
         }
     }
 
@@ -145,8 +144,27 @@ export class Timer {
             this.onStop();
         }
         else {
-            this.shortBreak();
+            // things to do after pomodoro is finished
+            recordFocusTime(this.currentTimeInput);
+            ++this.cycle;
+            if (this.cycle % 4 == 0) {
+                var finished = new Notification(this.timerType, {
+                    body: this.cycle.toString() + " pomodoro finished.\n" +
+                    "Take a short break.",
+                });
+                this.shortBreak();
+            } else {
+                var finished = new Notification(this.timerType, {
+                    body: "4 consecutive pomodoro finished.\n" +
+                    "You have finished " + this.cycle.toString() + " pomodoros\n" +
+                    "Take a long break.",
+                })
+                this.longBreak();
+            }
+
             this.onStop();
+            
+            // start short break immediately
             this.check();
         }
 
@@ -160,6 +178,34 @@ export class Timer {
                 started: this.isStarted,
                 typeOfTimer: this.timerType
             });
+    }
+
+    // push the focus time to google calendar
+    recordFocusTime(minutes) {
+        const now = new Date();
+        const start = new Date(now.getTime() - minutes*60000); // x minutes before
+        var event = {
+            'summary': 'pomodoro focus time',
+            'description': 'Attention span',
+            'start': {
+              'dateTime': start.toISOString(),
+            //   'timeZone': 'America/Los_Angeles'
+            },
+            'end': {
+              'dateTime': now.toISOString(),
+            //   'timeZone': 'America/Los_Angeles'
+            },
+        };          
+        
+        gapi.client.calendar.events.insert({
+            'calendarId': pomodoroCalendarId,
+            'resource': event
+        }).then(function (response) {
+                // Handle the results here (response.result has the parsed body).
+                console.log("Response", response);
+            },
+            function (err) { console.error("gapi.client.calendar.events.insert Execute error", err); }
+        );
     }
 
 
@@ -205,7 +251,7 @@ export class Timer {
 
         this.shortBreakButton.classList.add('reset');
         this.longBreakButton.classList.add('reset');
-        this.currentTimeInput.value = '0:10';
+        this.currentTimeInput.value = '25:00';
         this.timerTypeLabel.innerText = 'Time to work!';
 
 
@@ -242,7 +288,7 @@ export class Timer {
 
         this.pomodoroButton.classList.add('reset');
         this.longBreakButton.classList.add('reset');
-        this.currentTimeInput.value = '00:10';
+        this.currentTimeInput.value = '5:00';
         this.timerTypeLabel.innerText = 'Time for a break';
 
         const today = new Date();

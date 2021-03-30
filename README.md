@@ -1,6 +1,6 @@
-# Reverse-Engineer pomofocus.io
+# pomofocus with Google Calendar
 
- This is a javascript project to build a customizable pomodoro timer.
+This is a javascript project to build a customizable pomodoro timer.
 This project has been developed using the _development strategy_ concept with one branch per step.
 It is a way to practice the concept of asynchronous Programming in javascript.
 

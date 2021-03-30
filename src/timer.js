@@ -46,7 +46,7 @@ export class Timer {
 
     start = () => {
         this.tik();
-        this.intervalId = setInterval(this.tik, this.intervalSeconds)
+        this.intervalId = setInterval(this.tik, this.intervalSeconds);
         this.onStart();
     };
 
@@ -63,10 +63,9 @@ export class Timer {
         if (this.timeLeft <= 0) {
             this.stop();
             this.onComplete();
-
         } else {
             this.timeLeft = this.timeLeft - 1;
-
+            console.log(this.timeLeft);
             this.onTik();
         }
     }
@@ -88,7 +87,7 @@ export class Timer {
         console.log('timer has been started');
 
         this.startStopButton.innerText = 'Stop';
-        this.startStopButton.classList.remove('start')
+        this.startStopButton.classList.remove('start');
         this.startStopButton.classList.add('stop');
 
         const today = new Date();
@@ -105,7 +104,13 @@ export class Timer {
 
     // action(s) will be done when timer tikking
     onTik() {
-        console.log('timer tikking')
+        console.log('timer tikking');
+
+        if (this.timeLeft == 5) {
+            var tln = new Notification(this.timerType, {
+                body: "5 minutes left",
+            })
+        }
     }
 
     // action(s) will be done when timer stopped
@@ -133,16 +138,16 @@ export class Timer {
     onComplete() {
         console.log('timer completed');
 
-        const completedSound = new Audio('../public/assets/sounds/Clock-ringing.mp3');
-        completedSound.play();
+        // const completedSound = new Audio('../public/assets/sounds/Clock-ringing.mp3');
+        // completedSound.play();
         if (this.timerType !== 'pomodoro') {
             this.pomodoro();
-
             this.onStop();
         }
         else {
             this.shortBreak();
             this.onStop();
+            this.check();
         }
 
         const today = new Date();
@@ -200,7 +205,7 @@ export class Timer {
 
         this.shortBreakButton.classList.add('reset');
         this.longBreakButton.classList.add('reset');
-        this.currentTimeInput.value = '25:00';
+        this.currentTimeInput.value = '0:10';
         this.timerTypeLabel.innerText = 'Time to work!';
 
 
@@ -237,7 +242,7 @@ export class Timer {
 
         this.pomodoroButton.classList.add('reset');
         this.longBreakButton.classList.add('reset');
-        this.currentTimeInput.value = '05:00';
+        this.currentTimeInput.value = '00:10';
         this.timerTypeLabel.innerText = 'Time for a break';
 
         const today = new Date();

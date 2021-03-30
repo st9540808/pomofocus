@@ -22,3 +22,7 @@ const timer = new Timer(duration, startStopButton, pomodoroBtn, shortBreakBtn, l
 
 
 const newTask = new Task(inputEl);
+
+window.addEventListener('load', function () {
+    Notification.requestPermission();
+});

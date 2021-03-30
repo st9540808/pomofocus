@@ -183,9 +183,9 @@ export class Timer {
     }
 
     // push the focus time to google calendar
-    recordFocusTime(minutes) {
+    recordFocusTime(seconds) {
         const now = new Date();
-        const start = new Date(now.getTime() - minutes*60000); // x minutes before
+        const start = new Date(now.getTime() - seconds*1000); // x seconds before
         var event = {
             'summary': 'pomodoro focus time',
             'description': 'Attention span',

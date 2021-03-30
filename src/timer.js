@@ -14,6 +14,7 @@ export class Timer {
     constructor(currentTimeInput, startStopButton, pomodoroButton, shortBreakButton, longBreakButton, body, timerTypeLabel, taskInput) {
 
         this.currentTimeInput = currentTimeInput;
+        this.pomodoroTime = this.currentTimeInput.value;
 
         this.startStopButton = startStopButton;
         this.pomodoroButton = pomodoroButton;
@@ -145,9 +146,10 @@ export class Timer {
         }
         else {
             // things to do after pomodoro is finished
-            this.recordFocusTime(this.currentTimeInput);
+            console.log(this.pomodoroTime);
+            this.recordFocusTime(this.getSeconds(this.pomodoroTime));
             ++this.cycle;
-            if (this.cycle % 4 == 0) {
+            if (this.cycle % 4 != 0) {
                 var finished = new Notification(this.timerType, {
                     body: this.cycle.toString() + " pomodoro finished.\n" +
                     "Take a short break.",

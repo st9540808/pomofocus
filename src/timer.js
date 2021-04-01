@@ -141,6 +141,10 @@ export class Timer {
         // const completedSound = new Audio('../public/assets/sounds/Clock-ringing.mp3');
         // completedSound.play();
         if (this.timerType !== 'pomodoro') {
+            var finished = new Notification(this.timerType, {
+                body: this.timerType + " is finished.\n" +
+                "Return to work!",
+            });
             this.pomodoro();
             this.onStop();
         }
